@@ -154,6 +154,9 @@ function GulefirdousApp() {
     () => products.find((product) => product.id === selectedProductId) || products[0],
     [products, selectedProductId]
   );
+  const latestOrder = orders[0];
+  const latestOrderProduct =
+    products.find((product) => product.id === latestOrder.productId) || products[0];
 
   const postCaption = useMemo(() => {
     return `${selectedProduct.name}\n${selectedProduct.description}\nPrice: ${formatPrice(
@@ -449,6 +452,33 @@ function GulefirdousApp() {
               </div>
             ))}
           </div>
+          <div className="gf-inline-tracking">
+            <div>
+              <p className="gf-eyebrow">Latest customer order</p>
+              <h3>{latestOrder.id}</h3>
+              <p>
+                {latestOrder.customer} ordered {latestOrderProduct.name} through{" "}
+                {latestOrder.source}.
+              </p>
+              <strong>{latestOrder.paymentMethod}</strong>
+            </div>
+            <div className="gf-timeline">
+              {statusOrder.map((status, index) => (
+                <span
+                  key={status}
+                  className={index <= statusOrder.indexOf(latestOrder.status) ? "done" : ""}
+                >
+                  {status}
+                </span>
+              ))}
+            </div>
+            <div className="gf-order-actions">
+              <span>Tracking: {latestOrder.trackingNumber || "Waiting for shipment"}</span>
+              <button type="button" onClick={() => advanceOrder(latestOrder.id)}>
+                Move to next status
+              </button>
+            </div>
+          </div>
         </article>
 
         <article className="gf-panel">
@@ -490,32 +520,23 @@ function GulefirdousApp() {
           </div>
           <span className="gf-pill">Courier: TCS</span>
         </div>
-        <div className="gf-orders">
+        <div className="gf-order-table">
           {orders.map((order) => {
             const product = products.find((item) => item.id === order.productId) || products[0];
-            const currentStep = statusOrder.indexOf(order.status);
 
             return (
-              <article key={order.id} className="gf-order-card">
+              <article key={order.id} className="gf-order-row">
+                <span>{order.id}</span>
+                <strong>{product.name}</strong>
+                <p>
+                  {order.customer} - {order.paymentMethod} - Source: {order.source}
+                </p>
+                <small>{formatPrice(order.total)}</small>
+                <em>{order.status}</em>
                 <div>
-                  <span>{order.id}</span>
-                  <h3>{product.name}</h3>
-                  <p>
-                    {order.customer} - {order.paymentMethod} - Source: {order.source}
-                  </p>
-                  <strong>{formatPrice(order.total)}</strong>
-                </div>
-                <div className="gf-timeline">
-                  {statusOrder.map((status, index) => (
-                    <span key={status} className={index <= currentStep ? "done" : ""}>
-                      {status}
-                    </span>
-                  ))}
-                </div>
-                <div className="gf-order-actions">
-                  <span>Tracking: {order.trackingNumber || "Waiting for shipment"}</span>
+                  <small>{order.trackingNumber || "Waiting for shipment"}</small>
                   <button type="button" onClick={() => advanceOrder(order.id)}>
-                    Move to next status
+                    Next status
                   </button>
                 </div>
               </article>
