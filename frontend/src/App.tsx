@@ -1,9 +1,9 @@
-import AppRoutes from './routes/routes';
+import GulefirdousApp from "./features/gulefirdous/GulefirdousApp";
 
 function App() {
   return (
     <div className="App">
-     <AppRoutes/>
+      <GulefirdousApp />
     </div>
   );
 }
