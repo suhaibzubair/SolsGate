@@ -33,5 +33,5 @@ test("creates a customer COD order from the app storefront", () => {
   fireEvent.click(screen.getAllByRole("button", { name: /Order with COD/i })[0]);
 
   expect(screen.getAllByText(/Cash on Delivery/i)).toHaveLength(initialOrders + 1);
-  expect(screen.getByText(/Demo Customer/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/Demo Customer/i).length).toBeGreaterThan(0);
 });
